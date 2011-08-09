@@ -96,10 +96,10 @@ set nowritebackup
 "set noswapfile
 
 
-set tabstop=8	"缩排8列，有大神建议折衷4，比8小，比2大"
-set expandtab   "将所有制表符转变成空格"
-set shiftwidth=8 "内/外缩排为8列"
-set shiftround   "总是内/外缩排至最近的移位点"
+set tabstop=8
+set expandtab
+set shiftwidth=8
+set shiftround
 
 set fo-=cro
 
