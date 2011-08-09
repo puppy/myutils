@@ -52,3 +52,8 @@ http://linux.chinaunix.net/techdoc/install/2006/05/09/932060.shtml
 
 
 http://lug.ustc.edu.cn/wiki/server/pxe/start
+
+
+
+"\e[A": history-search-backward
+"\e[B": history-search-forward
