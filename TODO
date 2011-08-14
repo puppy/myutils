@@ -64,3 +64,12 @@ ack-grep：grep的perl版替代品
 
 http://huoding.com/2011/08/09/104
 http://jcole.us/blog/archives/2010/09/28/mysql-swap-insanity-and-the-numa-architecture/
+
+
+\usepackage{hyperref}
+\hypersetup{
+        pdftitle={吉利项目测试环境部署文档},
+        pdfsubject={吉利项目测试环境部署文档},
+        pdfkeywords={apache mysql linux redis mongodb},
+        pdfauthor={夏侯锋 xiahoufeng@chinatsp.com},
+}
