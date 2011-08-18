@@ -67,3 +67,25 @@ sub get_line {
 
         (split /\s+/, $line)[1, 0, 2]; # 加括号是list context
 }
+
+
+sub readConfig {
+        my $file = shift;
+        my %config = ();
+
+        open (CF, "<", $file) or die "Error: open file: $file error!/n $!/n"; 
+        print "<-> readConfig Reading config file: $file./n";
+        while (<CF>) {
+            chomp();
+            next if (/^/s*#/);
+            next if (/^/s*$/);
+            next unless (/^[^;]+;[^;]+$/);
+            $_ =~ s/^/s*//;
+            $_ =~ s/#.*$//;
+            my ($key, $value) = split //s*;/s*/;
+            $config{$key} = $value;
+        }
+        close (CF);
+
+        return /%config;
+}
