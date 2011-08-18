@@ -86,3 +86,54 @@ $ bzr fast-export . | git fast-import
 $ gitk --all
 $ rm -r .bzr
 $ git reset HEAD
+
+
+
+
+
+LVM（逻辑卷管理）能将多个储存设备(包括分区，RAID设备等)合并成为一个新的储存设备。在这设备上可以建立多个分区。他支持动态调整分区大小，动态添加或删除底层设备。
+
+安装
+
+sudo apt-get install lvm2
+sudo apt-get install e2fsprogs
+
+创建
+
+LVM 可以在磁盘的分区或者RAID上的分区(如/dev/md0)上创建
+
+# pvcreate /dev/sdb /dev/sdc # 格式化分区为LVM格式
+# vgcreate vg0 /dev/sdb /dev/sdc # 创建volume group
+# vgdisplay vg0 # 显示volume group 信息
+# apt-get install dmraid # 安装raid device map
+# lvcreate -L 500G -n vol1 vg0 # 创建逻辑卷
+# mke2fs -j /dev/vg0/vol1 # 在逻辑卷上创建 ext3 分区
+# mount /dev/vg0/vol1 /mount/path
+
+扩容 (无须停机)
+
+# pvcreate /dev/sdd
+# vgextend vg0 /dev/sdd
+# lvextend -l +100%FREE /dev/vg0/vol1
+# resize2fs -p /dev/vg0/vol1
+
+磁盘损坏
+
+还有额外的地方可以连接新的硬盘 (无须停机)
+
+比如 /dev/sdb 损坏，接入的新硬盘叫 /dev/sde
+
+# pvcreate /dev/sde # 格式化新硬盘
+# vgextend vg0 /dev/sde # 添加新硬盘到卷组
+# pvmove /dev/sda /dev/sde # 移动数据
+# vgreduce vg0 /dev/sda # 卸载硬盘
+没有额外的地方可以连接新硬盘
+
+需要先缩小分区至可容纳在剩余的硬盘上
+
+# pvmove /dev/sda # 移动数据至同组的其他硬盘
+# vgreduce vg0 /dev/sda # 卸载硬盘
+# 更换硬盘
+# pvcreate /dev/sda
+# vgextend vg0 /dev/sda
+# 接上面的扩容步骤
