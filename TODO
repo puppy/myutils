@@ -73,3 +73,16 @@ http://jcole.us/blog/archives/2010/09/28/mysql-swap-insanity-and-the-numa-archit
         pdfkeywords={apache mysql linux redis mongodb},
         pdfauthor={夏侯锋 xiahoufeng@chinatsp.com},
 }
+
+
+
+
+[备忘] 把 bzr 仓库转为 git 仓库
+$ sudo apt-get install bzr-fastimport git-core
+$ bzr clone lp:~lidaobing/iptux/iptux
+$ cd iptux/
+$ git init
+$ bzr fast-export . | git fast-import
+$ gitk --all
+$ rm -r .bzr
+$ git reset HEAD
