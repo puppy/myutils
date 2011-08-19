@@ -89,3 +89,67 @@ sub readConfig {
 
         return /%config;
 }
+
+sub sendHtmlMail {
+    my ( $to, $subject, $body, $attach, $from ) = @_;
+
+    my $CRLF     = "/r/n";
+    my $Raw_Bond = "=======Boundary=======";
+    my $Bond     = "--=======Boundary=======";
+
+    my @receivor = split /[,;]/, $to;
+    my $smtp = Net::SMTP->new( Host => 'smtp.yeah.net', Debug => 1 );
+    $from = 'anderslee@yeah.net' unless $from;
+    $smtp->mail($from);
+    $smtp->recipient(@receivor);
+    $smtp->data();
+    $smtp->datasend("Subject: $subject/n");
+
+    my $head =
+        "MIME-Version: 1.0" 
+        . $CRLF
+        . "Content-Type: multipart/mixed; boundary=/"$Raw_Bond / ""
+        . $CRLF;
+        
+    $head .= "Content-Transfer-Encoding: base64" . $CRLF . $CRLF;
+    $smtp->datasend($head);
+
+    if ($body) {
+        my $content_head =
+                "Content-Type: text/html;" 
+                . $CRLF
+                . "Content-Transfer-Encoding: base64"
+                . $CRLF
+                . $CRLF;
+        
+        $smtp->datasend( "$Bond" . $CRLF );
+        $smtp->datasend($content_head);
+        $smtp->datasend( encode_base64( $body, $CRLF ) );
+    }
+
+    if ($attach) {
+            
+        $smtp->datasend( $CRLF . $CRLF . $Bond . $CRLF );
+        $smtp->datasend( 'Content-Type: application/octet-stream; name='
+              . "/"$attach / ""
+              . $CRLF );
+              
+        $smtp->datasend( 'Content-Transfer-Encoding: base64' . $CRLF );
+        $smtp->datasend( 'Content-Disposition: attachment; filename='
+              . "/"$attach / ""
+              . $CRLF
+              . $CRLF );
+
+        open( ATTA, "< $attach" ) or die "Open file: $attach error, $!/n";
+        
+        my $buffer;
+        
+        while ( read( ATTA, $buffer, 10 * 57 ) ) {
+            $smtp->datasend( encode_base64( $buffer, $CRLF ) );
+        }
+        close(ATTA);
+    }
+
+    $smtp->dataend();
+    $smtp->quit();
+}
