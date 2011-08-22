@@ -153,3 +153,144 @@ sub sendHtmlMail {
     $smtp->dataend();
     $smtp->quit();
 }
+
+
+
+
+
+
+
+
+
+
+#================================================================================
+
+
+
+#!/usr/local/bin/perl 
+use strict;
+use warnings;
+use Data::Dumper;
+
+
+use WWW::Mechanize;
+use HTTP::Cookies;
+use LWP::Debug qw(+);
+use HTTP::Request;
+use LWP::UserAgent;
+use HTTP::Request::Common;
+use POSIX qw(strftime);
+
+
+# 配置信息
+my $topic = 'YourLink';
+my $domain= 'twiki.test.com';
+my $url   = "http://$domain/twiki/bin/view.pl/Tech/$topic";
+my $un    = 'xx'; ##用户名 
+my $pw    = 'xx'; ##密码
+my @datas = qw(data1  data2);  ## test data
+
+
+# 构建agent
+my $agent = WWW::Mechanize->new(cookie_jar => {}, autocheck => 0);
+$agent->{onerror}=/&WWW::Mechanize::_warn;
+$agent->agent('Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.3) Gecko/20100407 Ubuntu/9.10 (karmic) Firefox/3.6.3');
+$agent->get($url);
+
+# 用户名/密码 登录
+$agent->submit_form(
+        form_number => 1,
+        fields      => { password => $pw, username => $un },
+);
+die unless ($agent->success); 
+
+
+##页面上所有link
+my @links = $agent->links();
+
+my $write_url;  ##  编辑twiki内容的url
+my $attach_url; ## 上传附件的url
+
+for my $wlink (@links) {
+        
+	my $url_str = $wlink->url;
+	
+	if ($url_str =~ /$domain//twiki//bin//edit.pl//Tech//$topic/?t/ ) {
+	  	$write_url = $url_str;
+	}
+	if ($url_str =~ ///twiki//bin//attach.pl//Tech//$topic/ ) {
+		$attach_url = $url_str;
+	}
+}
+
+if ($write_url) {
+	#print "Write Twiki/n";
+	write_twiki();
+}
+if ($attach_url ) {
+	#print "Attache File/n";
+	attach_file();
+}
+
+
+
+##############
+	  		
+sub write_twiki {
+		$agent->credentials($un, $pw); ###  HTTP Basic authentication for all sites and realms until further notice
+		$agent->get($write_url);
+		if ($agent->success ) {  
+	  		#print $agent->content;
+	  		my $text_inputs = ($agent->find_all_inputs(  ## 第一个textare
+        			type       => 'textarea',
+        			name_regex => qr/^text$/,
+    				))[0];
+	  		
+## 编辑twiki的数据
+			my $orig    = $text_inputs->value; ## 原来的内容
+			my $att_img ="";
+			
+## 上传的图片放到twiki最后(或者其他位置)
+			if ($orig =~ /(<img/ssrc.*?ATTACHURLPATH[^>]+//>).*/) {  
+				$att_img = $1;
+			}
+			$orig =~ s//*/s*test/.gif: <br //>//ig;
+			$orig =~ s/$att_img//g;
+			$orig =~ s//s+$//g;
+
+			my $today   = strftime("%Y.%m.%d", localtime( time() ) );
+			my $content = $orig."/n---++ $today/n";  ## twiki语法
+			for my $data (@datas) {
+		  		$content .= "   1 $data  OK. /n";
+		    }
+			$content .= "$att_img /n";
+			#print $content;  		
+	  	
+	  	$agent->submit_form(
+        form_number => 1,
+        fields      => { text => $content},
+			);
+			die unless ($agent->success); 
+	  	
+	  }
+	  else {
+	  	  #print $agent->content;
+	  		print $agent->status();
+	  		my $res= $agent->response();
+	      print $res->as_string
+	  } 
+}
+
+sub attach_file {
+		$agent->credentials($un, $pw); ###  HTTP Basic authentication for all sites and realms until further notice
+		$agent->get($attach_url);
+		if ($agent->success ) {  
+			#print $agent->content;
+			$agent->form_number(1);
+			$agent->field('filepath' =>'image/test.gif');
+			$agent->field('createlink' => 1);
+			$agent->submit();
+			die unless ($agent->success); 
+		}
+
+}
