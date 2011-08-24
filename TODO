@@ -136,4 +136,11 @@ LVM 可以在磁盘的分区或者RAID上的分区(如/dev/md0)上创建
 # 更换硬盘
 # pvcreate /dev/sda
 # vgextend vg0 /dev/sda
+
+
+
+mysql命令行
+
+pager less：设定less模式
+
 # 接上面的扩容步骤
