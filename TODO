@@ -143,4 +143,23 @@ mysql命令行
 
 pager less：设定less模式
 
+
+
+安装好xbindkeys后，使用下面命令生成默认的配置文件，
+
+$ xbindkeys --default > ~/.xbindkeysrc
+   
+
+$ xbindkeys -k # 单键
+$ xbindkeys -mk # 组合键
+
+运行上面的命令后按下想要设定的按键，将生成的字符序列拷贝到~/.xbindkeysrc中即可。
+
+
+X的剪贴板
+
+echo "Hello, world" | xclip  
+
+gnome等的剪贴板
+echo "Hello, world" | xclip -selection clipboard
 # 接上面的扩容步骤
