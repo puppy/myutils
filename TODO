@@ -163,3 +163,22 @@ echo "Hello, world" | xclip
 gnome等的剪贴板
 echo "Hello, world" | xclip -selection clipboard
 # 接上面的扩容步骤
+
+
+
+
+
+ PostgreSQL数据库是一款非常优秀的开源数据库，有丰富的的功能，在功能上是全面超越MySQL的一个开源数据库，在性能上也不比MysQL差，同时PostgreSQL与Ｏracle一样，都是进程架构，能更好的发挥出多CPU的性能。
+大家可能都知道MySQL数据库，但很多人可能不是很清楚PostgreSQL数据库，这其实是有历史原因的。在互联网兴起之初，由于MySQL的ＭyIsam引擎没有事务，性能很好，而那时的PostgreSQL还在7.X版本之前，虽然功能上强大，但由于有了事务，性能上比MySQL有一定的差距，另PostgreSQL之初是做为教学数据库推出的，有很多先进的功能，但易用性上不如MySQL，所以在互联网之初，很多小网站都是使用MySQL的，很多开源的建站源码如博客系统、cms系统都是基于MySQL了。所以直到现在MySQL的人气是比PostgreSQL旺的。特别在中国，MySQL的流行程度是远超PostgreSQL的，但在近几年，这个情况在慢慢改观，如日本，PostgreSQL的流行程度是超过MySQL的，日本的很多大公司都在使用PostgreSQL数据库。
+
+ 在PostgreSQL数据库进入8.X版本后，易用性得到了大大改善，PostgreSQL也不再是教学数据库了。目前PostgreSQL最新版本是9.0.3。
+
+ PostgreSQL支持hash join，sort merge join，有极其先进的SQL优化器，轻松处理复杂的SQL，支持丰富的数据类型。PostgreSQL有丰富的统计信息，可以很方便的定位性能问题。
+
+ 基于PostgreSQL的高可用方案和集群方案也是比MySQL多的，如在PostgreSQL中逻辑复制的软件有slony、bucardo，slony是master-slave架构，bucardo还能支持双master架构，基本中间件的软件如pgpool，pgpool是类似mysql下的mysql proxy的软件，但功能上比mysql proxy强大很多，有连接池、数据复制、failover、数据shard的功能。通过改告数据库形成的同步多master架构有cybercluster 、pgcluster。做数据水平拆分的有plproxy。
+
+ 在数据仓库领域的基于PostgreSQL有greenplum和gridsql，这两个软件都实现的跨节点的join功能，而且对性能做了很多的优化。
+
+ 如果说MySQL是一把锋利的匕首，那么PostgreSQL就是瑞士军刀。MySQL功能简单，适应特定业务场景，而PostgreSQL数据库，功能强大，几乎能适应全部数据库场景。在很多公司，把MySQL当做存储使用，但没有听说那个公司把Oracle和PostgreSQL当做存储使用，原因是MySQL功能少，很难在数据库层面上实现复杂业务，所以很多公司把MySQL当存储使用后，更多的复杂业务功能都是由开发写代码来实现，这其实是大大增加了开发成本。
+
+ PostgreSQL最大的缺点就是了解PostgreSQL数据库的人不是很多，特别是在中国。目前我们公司在PostgreSQL数据库运行的最成功的案例，就是数据仓库的实时数据中心系统，这个系统由PostgreSQL+cobar的组成(cobar是一个我们公司开发的类似pgpool的软件，主要做数据shard)，这个系统目前已上线正式运行了。这个系统是取代原先的一个oracle数据库系统的。
