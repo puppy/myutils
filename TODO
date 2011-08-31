@@ -182,3 +182,24 @@ echo "Hello, world" | xclip -selection clipboard
  如果说MySQL是一把锋利的匕首，那么PostgreSQL就是瑞士军刀。MySQL功能简单，适应特定业务场景，而PostgreSQL数据库，功能强大，几乎能适应全部数据库场景。在很多公司，把MySQL当做存储使用，但没有听说那个公司把Oracle和PostgreSQL当做存储使用，原因是MySQL功能少，很难在数据库层面上实现复杂业务，所以很多公司把MySQL当存储使用后，更多的复杂业务功能都是由开发写代码来实现，这其实是大大增加了开发成本。
 
  PostgreSQL最大的缺点就是了解PostgreSQL数据库的人不是很多，特别是在中国。目前我们公司在PostgreSQL数据库运行的最成功的案例，就是数据仓库的实时数据中心系统，这个系统由PostgreSQL+cobar的组成(cobar是一个我们公司开发的类似pgpool的软件，主要做数据shard)，这个系统目前已上线正式运行了。这个系统是取代原先的一个oracle数据库系统的。
+
+
+
+
+
+
+
+
+
+
+
+
+[banping@linux ~]$ cd /home/banping/
+[banping@linux ~]$ vi .bash_profile
+#write log
+exec /usr/bin/script -a -f -q /tmp/test/script-`date +%Y%m%d%k%M`.lst
+这行脚本的意思是在/tmp/test目录下以时间为文件名来记录操作信息，由于是写在了.bash_profile文件中，用户登入到Linux系统的时候就会触发执行。
+然后我们在/tmp下建立test目录存放操作日志信息即可：
+[banping@linux tmp]# mkdir test
+这样就实现了记录的功能，而要防止用户自行修改，我们可以设置这些文件只能被附加，不能被修改或删除：
+[root@linux banping]# chattr +a .bash_profile
