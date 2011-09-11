@@ -203,3 +203,25 @@ exec /usr/bin/script -a -f -q /tmp/test/script-`date +%Y%m%d%k%M`.lst
 [banping@linux tmp]# mkdir test
 这样就实现了记录的功能，而要防止用户自行修改，我们可以设置这些文件只能被附加，不能被修改或删除：
 [root@linux banping]# chattr +a .bash_profile
+
+
+
+
+1.以crontab格式运行，例：同步时间服务器
+代码示例：
+cron{ ntpdate:
+      command => “/usr/sbin/ntpdate 192.168.0.1″,
+      user => root,
+      minute =>’*/5′,
+      require => Package["crontabs"];
+        }
+2.以文件的方式运行计划任务
+代码示例：
+file {
+        ”/etc/cron.hourly/ntpdate”:
+        mode => 755,
+        owner => root,
+        group => root,
+        require => Package[ntp],
+        content => template(“ntp/ntpdate.erb”),
+        }
